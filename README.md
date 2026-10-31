@@ -1,5 +1,10 @@
 # JustInsurance support-desk work sample
 
+> **Submission notes.** Read **[HANDOFF.md](HANDOFF.md)** for what I fixed, the checks I ran, operator instructions, remaining risks, the AI-use note and time spent.
+> From a clean checkout with Node.js 24+ (no install step): `npm test` runs all tests, including end-to-end tests that start the real server and mock provider themselves.
+> To run it by hand: `npm run provider`, then `npm start`, then open http://127.0.0.1:4300. `npm run event` replays an inbound event.
+> The rest of this file is the original brief, unchanged.
+
 You are inheriting a small, unfinished support inbox. Make one customer-support workflow safe and usable. This is fictional assessment software. It uses synthetic data and is not work on our production system.
 
 ## Format and time limit
