@@ -1,0 +1,32 @@
+﻿# npm test output against the UNMODIFIED starter (commit d01aec3) with the new tests added
+# Node v26.13.0, 2026-10-31
+✔ webhook authentication is enforced (226.5632ms)
+✖ overlapping webhook replays store one message per organization-scoped event (23.1897ms)
+✖ cross-organization access is refused even with a forged tenantId (2.3235ms)
+✖ provider timeout -> UNKNOWN, no resend, reconcile confirms the same attempt (41.0154ms)
+✖ application restart during an accepted-but-unanswered send does not resend (160.8173ms)
+✖ overlapping send requests reach the provider once; takeover blocks automation (34.3233ms)
+✖ webhook replay creates exactly one customer message (3.118ms)
+✔ event identity is scoped per organization (0.6337ms)
+✖ webhook replay after an application restart is still ignored (120.8436ms)
+✖ event record and its message commit or roll back together (1.1228ms)
+✔ webhook for a ticket in another organization is rejected (0.7348ms)
+✖ an agent cannot read or change another organization's ticket (1.0113ms)
+✔ a draft cannot be sent before approval (0.6686ms)
+✖ editing an approved draft invalidates the approval (0.9178ms)
+✖ approval of a stale version is refused (0.6812ms)
+✖ overlapping send requests deliver the approved version once (33.836ms)
+✖ a provider timeout is recorded as UNKNOWN and never auto-resent (1.617ms)
+✖ reconcile: not_found and lookup failures stay UNKNOWN; delivered resolves without resending (0.969ms)
+✖ an explicit rejection is a safe failure that can be retried (0.7133ms)
+✖ restart while a send is in flight does not send again (21.3466ms)
+✖ after takeover, automation is refused but an approved human reply is sent (1.2711ms)
+✔ automation also requires approval (0.624ms)
+✖ ticket view tells the operator the next safe action (0.6466ms)
+✔ inbox lists only the signed-in tenant (1.9374ms)
+✔ a simple approved reply reaches a healthy provider (3.5093ms)
+ℹ tests 25
+ℹ pass 7
+ℹ fail 18
+✖ failing tests:
+
