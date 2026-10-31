@@ -1,0 +1,13 @@
+{
+  "name": "justinsurance-support-desk-work-sample",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "provider": "node src/mock-provider.mjs",
+    "test": "node --test test/*.test.mjs",
+    "event": "node src/replay-event.mjs"
+  }
+}

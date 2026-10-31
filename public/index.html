@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Support desk work sample</title>
+<style>
+body{font:16px system-ui;margin:32px auto;max-width:1000px;padding:0 20px;color:#182231;background:#f6f7f9}h1{font-size:25px}main{display:grid;grid-template-columns:260px 1fr;gap:30px}button,select,textarea{font:inherit;padding:9px;margin:4px 0}button{cursor:pointer}textarea{width:95%;min-height:100px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:14px;border:1px solid #d5dae2;font-size:13px}#notice{min-height:25px;font-weight:600}li{margin:10px 0}.buttons{display:flex;flex-wrap:wrap;gap:6px}small{color:#586577}@media(max-width:650px){main{display:block}}
+</style>
+<h1>Support desk work sample</h1><p>Fictional customers · local exercise · no real messages are sent.</p>
+<label>Signed in as <select id="identity"><option value="alpha">Alpha support agent</option><option value="beta">Beta support agent</option></select></label>
+<p id="notice" role="status"></p><main><section><h2>Inbox</h2><button id="refresh">Refresh</button><ul id="tickets"></ul></section>
+<section><h2 id="title">Select a ticket</h2><p id="state"></p><div id="work" hidden>
+<h3>Conversation</h3><pre id="messages"></pre><label for="draft">Reply draft</label><textarea id="draft"></textarea>
+<small>The suggested reply is a fixed fixture. No AI API or account is needed.</small>
+<div class="buttons"><button data-action="suggest">Use suggested reply</button><button data-action="draft">Save draft</button><button data-action="approve">Approve saved draft</button><button data-action="send">Send manually</button><button data-action="handoff">Take over</button><button data-action="automation">Simulate automation</button><button data-action="reconcile">Check delivery</button></div>
+<h3>Delivery and audit trail</h3><pre id="audit"></pre></div></section></main>
+<script type="module">
+let selected;
+const $=id=>document.getElementById(id);
+async function api(path,method='GET',body){const r=await fetch(path,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer demo-'+$('identity').value+'-token'},body:body===undefined?undefined:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Error(data.error);return data;}
+function render(t){$('work').hidden=false;$('title').textContent=t.subject+' · '+t.contact;$('state').textContent='Owner: '+t.owner+' | Delivery: '+t.send_state+' | Draft v'+t.version+' | Approved v'+(t.approved_version??'none');$('draft').value=t.draft;$('messages').textContent=t.messages.map(m=>m.body).join('\n\n')||'No inbound messages yet. Run npm run event.';$('audit').textContent=JSON.stringify({attempts:t.attempts,audit:t.audit},null,2);}
+async function refresh(){const rows=await api('/api/tickets');$('tickets').replaceChildren();for(const t of rows){const li=document.createElement('li'),b=document.createElement('button');b.textContent=t.id+': '+t.contact;b.onclick=()=>act(async()=>{selected=t.id;render(await api('/api/tickets/'+selected));});li.append(b);$('tickets').append(li);}}
+async function act(fn){try{$('notice').textContent='';await fn();}catch(e){$('notice').textContent=e.message;if(selected){try{render(await api('/api/tickets/'+selected));}catch{}}}}
+$('refresh').onclick=()=>act(refresh);$('identity').onchange=()=>{selected=undefined;$('work').hidden=true;$('title').textContent='Select a ticket';$('state').textContent='';act(refresh);};
+for(const b of document.querySelectorAll('[data-action]'))b.onclick=()=>act(async()=>{const a=b.dataset.action;if(a==='suggest'){$('draft').value='Thanks for reaching out. A support agent will help you recover your progress.';return;}const t=await api('/api/tickets/'+selected+'/'+a,'POST',a==='draft'?{body:$('draft').value}:{});render(t);$('notice').textContent='Action completed. Check the delivery state and audit trail.';});
+act(refresh);
+</script></html>
